@@ -63,7 +63,7 @@ public class ProxyClazzAsmGeneratorImpl implements ProxyClazzGenerator {
         MethodVisitor methodVisitor = classWriter.visitMethod(Opcodes.ACC_PUBLIC,method.getName(),"(Ljava/lang/String;)Ljava/lang/String;",null,null);
         methodVisitor.visitCode();
         methodVisitor.visitMethodInsn(Opcodes.INVOKESTATIC, "net/galvin/orange/core/comm/impl/NetTransportClientImpl", "get", "()Lnet/galvin/orange/core/comm/NetTransportClient;");
-        methodVisitor.visitLdcInsn("QChu");
+        methodVisitor.visitVarInsn(Opcodes.ALOAD,1);
         methodVisitor.visitMethodInsn(Opcodes.INVOKEINTERFACE, "net/galvin/orange/core/comm/NetTransportClient", "send", "(Ljava/lang/String;)V");
         methodVisitor.visitVarInsn(Opcodes.ALOAD,1);
         methodVisitor.visitInsn(Opcodes.ARETURN);

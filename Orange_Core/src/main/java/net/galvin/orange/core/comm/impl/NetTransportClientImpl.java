@@ -1,6 +1,7 @@
 package net.galvin.orange.core.comm.impl;
 
 import net.galvin.orange.core.comm.NetTransportClient;
+import net.galvin.orange.core.transport.netty.NettySessionManager;
 
 /**
  * Created by Administrator on 2016/12/7.
@@ -24,7 +25,10 @@ public class NetTransportClientImpl implements NetTransportClient {
 
     @Override
     public void send(String msg) {
-        System.out.println("msg: "+msg);
+        NettySessionManager.get().session(null,null).writeAndFlush(msg.getBytes());
     }
+
+
+
 
 }
