@@ -1,15 +1,15 @@
 package net.galvin.orange.core.transport.netty;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 
-/**
- * Created by qchu on 16-12-11.
- */
 public class NettySession {
+
+    private Logger logger = LoggerFactory.getLogger(NettySession.class);
 
     private String remoteAddress;
     private Integer remotePort;
@@ -58,10 +58,18 @@ public class NettySession {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        this.channelFuture.channel().read();
-
     }
+
+    public Object getReturnVal(){
+        Object returnVal = null;
+        try {
+            returnVal = this.channelFuture.get();
+        } catch (Exception e) {
+
+        }
+        return returnVal;
+    }
+
 
     public void close(){
         this.channelFuture.channel().closeFuture();
