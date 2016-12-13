@@ -6,6 +6,7 @@ import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
+import net.galvin.orange.core.demo.HelloServiceImpl;
 
 /**
  * ChannelInboundHandlerAdapter 实现了 ChannelInboundHandler，提供了多种事件处理方法。
@@ -78,6 +79,7 @@ public class NettyTransportServerHandler extends ChannelInboundHandlerAdapter {
                 System.out.print((char) in.readByte());
                 System.out.flush();
             }
+            HelloServiceImpl.get().hello(null);
         } finally {
             /**
              * ByteBuf是有一个引用计数的对象，必须要显示的调用 release() 方法来释放。

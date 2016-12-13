@@ -29,11 +29,10 @@ public class NetTransportClient {
                 }
             });
 
-            // Start the client.
             ChannelFuture channelFuture = bootstrap
                     .connect(nettySession.getRemoteAddress(), nettySession.getRemotePort()).sync();
             nettySession.setChannelFuture(channelFuture);
-            // Wait until the connection is closed.
+
             channelFuture.channel().closeFuture();
         } catch (Exception e) {
             e.printStackTrace();
