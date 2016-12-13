@@ -32,7 +32,6 @@ public class NetTransportClient {
             ChannelFuture channelFuture = bootstrap
                     .connect(nettySession.getRemoteAddress(), nettySession.getRemotePort()).sync();
             nettySession.setChannelFuture(channelFuture);
-
             channelFuture.channel().closeFuture();
         } catch (Exception e) {
             e.printStackTrace();
