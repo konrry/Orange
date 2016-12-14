@@ -15,7 +15,7 @@ public class Client {
         HelloService helloService = (HelloService) proxyClazzGenerator.generate(HelloService.class);
         System.out.println("子类生成 end");
         System.out.println("调用子类方法 hello start");
-        String hello = helloService.hello("Galvin, this is HelloService");
+        String hello = helloService.hello("Galvin_HelloService");
         System.out.println("调用子类方法 hello end");
     }
 

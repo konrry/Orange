@@ -12,9 +12,9 @@ public class Demo {
 
     public static void main(String[] args) {
 
-        logger.warn("log4j warn level");
-        logger.info("log4j info level");
-        logger.debug("log4j debug level");
+        int a = 1;
+        Integer b = new Integer(2);
+        System.out.println();
 
 
     }

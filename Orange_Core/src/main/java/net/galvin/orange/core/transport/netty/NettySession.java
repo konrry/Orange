@@ -2,6 +2,7 @@ package net.galvin.orange.core.transport.netty;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFuture;
+import io.netty.util.CharsetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +43,7 @@ public class NettySession {
         this.channelFuture = channelFuture;
     }
 
-    public void writeAndFlush(byte[] data){
+    public void writeAndFlush(String msg){
 
         if(this.channelFuture == null){
             synchronized (this){
@@ -51,8 +52,9 @@ public class NettySession {
                 }
             }
         }
+        System.out.println("......");
         ByteBuf byteBuf = this.channelFuture.channel().alloc().buffer();
-        byteBuf.writeBytes(data);
+        byteBuf.writeCharSequence(msg, CharsetUtil.UTF_8);
         try {
             this.channelFuture.channel().writeAndFlush(byteBuf).sync();
         } catch (Exception e) {

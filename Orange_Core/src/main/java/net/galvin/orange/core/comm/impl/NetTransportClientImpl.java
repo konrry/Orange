@@ -25,7 +25,7 @@ public class NetTransportClientImpl implements NetTransportClient {
 
     @Override
     public void send(String msg) {
-        NettySessionManager.get().session(null,null).writeAndFlush(msg.getBytes());
+        NettySessionManager.get().session(null,null).writeAndFlush(msg);
     }
 
 
