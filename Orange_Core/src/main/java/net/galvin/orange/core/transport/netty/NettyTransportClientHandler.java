@@ -11,26 +11,26 @@ import io.netty.util.ReferenceCountUtil;
 
 import java.util.Date;
 
-public class NettyClientHandler extends ChannelInboundHandlerAdapter {
+public class NettyTransportClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("NettyClientHandler ===>> channelActive");
+        System.out.println("NettyTransportClientHandler ===>> channelActive");
     }
 
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) {
-        System.out.println("NettyClientHandler ===>> handlerAdded");
+        System.out.println("NettyTransportClientHandler ===>> handlerAdded");
     }
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) {
-        System.out.println("NettyClientHandler ===>> handlerRemoved");
+        System.out.println("NettyTransportClientHandler ===>> handlerRemoved");
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        System.out.println("NettyClientHandler ===>> channelRead");
+        System.out.println("NettyTransportClientHandler ===>> channelRead");
         ByteBuf byteBufMsg = (ByteBuf) msg;
         while(byteBufMsg.isReadable()){
             System.out.println(byteBufMsg.readByte());
@@ -39,7 +39,7 @@ public class NettyClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        System.out.println("NettyClientHandler ===>> exceptionCaught");
+        System.out.println("NettyTransportClientHandler ===>> exceptionCaught");
         cause.printStackTrace();
     }
 

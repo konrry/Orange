@@ -1,6 +1,6 @@
-package net.galvin.orange.core.comm.impl;
+package net.galvin.orange.core.bytecode.impl;
 
-import net.galvin.orange.core.comm.ProxyClazzGenerator;
+import net.galvin.orange.core.bytecode.ProxyClazzGenerator;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
@@ -62,9 +62,9 @@ public class ProxyClazzAsmGeneratorImpl implements ProxyClazzGenerator {
     private void makeMethod(ClassWriter classWriter, Method method){
         MethodVisitor methodVisitor = classWriter.visitMethod(Opcodes.ACC_PUBLIC,method.getName(),"(Ljava/lang/String;)Ljava/lang/String;",null,null);
         methodVisitor.visitCode();
-        methodVisitor.visitMethodInsn(Opcodes.INVOKESTATIC, "net/galvin/orange/core/comm/impl/NetTransportClientImpl", "get", "()Lnet/galvin/orange/core/comm/NetTransportClient;");
+        methodVisitor.visitMethodInsn(Opcodes.INVOKESTATIC, "net/galvin/orange/core/transport/comm/NetTransportProxy", "get", "()Lnet/galvin/orange/core/transport/comm/NetTransportProxy;");
         methodVisitor.visitVarInsn(Opcodes.ALOAD,1);
-        methodVisitor.visitMethodInsn(Opcodes.INVOKEINTERFACE, "net/galvin/orange/core/comm/NetTransportClient", "send", "(Ljava/lang/String;)V");
+        methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "net/galvin/orange/core/transport/comm/NetTransportProxy", "send", "(Ljava/lang/String;)V");
         methodVisitor.visitVarInsn(Opcodes.ALOAD,1);
         methodVisitor.visitInsn(Opcodes.ARETURN);
         methodVisitor.visitMaxs(3,3);
