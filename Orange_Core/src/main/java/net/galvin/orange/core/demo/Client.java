@@ -9,10 +9,10 @@ import net.galvin.orange.core.bytecode.impl.ProxyClazzAsmGeneratorImpl;
 public class Client {
 
     public static void main(String[] args) {
-
         ProxyClazzGenerator proxyClazzGenerator = ProxyClazzAsmGeneratorImpl.get();
         HelloService helloService = (HelloService) proxyClazzGenerator.generate(HelloService.class);
-        String hello = helloService.hello("Galvin_HelloService");
+        String hello = helloService.hello("Client");
+        System.out.println("hello: "+hello);
     }
 
 }

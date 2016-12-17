@@ -22,8 +22,8 @@ public class NetTransportProxy {
         return netTransportProxy;
     }
 
-    public void send(String msg) {
-        NettySessionManager.get().session(null,null).writeAndFlush(msg);
+    public String send(String msg) {
+        return NettySessionManager.get().session(null,null).writeAndFlush(msg);
     }
 
 

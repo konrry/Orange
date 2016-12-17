@@ -8,12 +8,16 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import net.galvin.orange.core.Utils.SysEnum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Netty服务器
  */
-public class NettyTransportServer {
+public class NettyServer {
 
+    private final Logger logger = LoggerFactory.getLogger(NettyServer.class);
 
     private int port = 9028;
 
@@ -27,7 +31,7 @@ public class NettyTransportServer {
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         public void initChannel(SocketChannel ch) throws Exception {
-                            ch.pipeline().addLast(new NettyTransportServerHandler());
+                            ch.pipeline().addLast(new NettyServerHandler());
                         }
                     })
                     .option(ChannelOption.SO_BACKLOG, 128)
@@ -36,7 +40,7 @@ public class NettyTransportServer {
             ChannelFuture future = b.bind(port).sync();
             future.channel().closeFuture().sync();
         }catch (Exception e){
-            e.printStackTrace();
+            logger.error(SysEnum.format(e));
         }finally {
             workerGroup.shutdownGracefully();
             bossGroup.shutdownGracefully();
@@ -44,7 +48,7 @@ public class NettyTransportServer {
     }
 
     public static void main(String[] args) throws Exception {
-        NettyTransportServer nettyTransportServer = new NettyTransportServer();
+        NettyServer nettyTransportServer = new NettyServer();
         nettyTransportServer.start();
     }
 

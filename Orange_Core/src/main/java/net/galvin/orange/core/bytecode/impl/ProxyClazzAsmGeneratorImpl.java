@@ -64,8 +64,8 @@ public class ProxyClazzAsmGeneratorImpl implements ProxyClazzGenerator {
         methodVisitor.visitCode();
         methodVisitor.visitMethodInsn(Opcodes.INVOKESTATIC, "net/galvin/orange/core/transport/comm/NetTransportProxy", "get", "()Lnet/galvin/orange/core/transport/comm/NetTransportProxy;");
         methodVisitor.visitVarInsn(Opcodes.ALOAD,1);
-        methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "net/galvin/orange/core/transport/comm/NetTransportProxy", "send", "(Ljava/lang/String;)V");
-        methodVisitor.visitVarInsn(Opcodes.ALOAD,1);
+        methodVisitor.visitMethodInsn(Opcodes.INVOKEVIRTUAL, "net/galvin/orange/core/transport/comm/NetTransportProxy", "send", "(Ljava/lang/String;)Ljava/lang/String;");
+//        methodVisitor.visitVarInsn(Opcodes.ALOAD,1);
         methodVisitor.visitInsn(Opcodes.ARETURN);
         methodVisitor.visitMaxs(3,3);
         methodVisitor.visitEnd();

@@ -10,27 +10,40 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.CharsetUtil;
-import org.omg.CosNaming.NamingContextPackage.CannotProceed;
+import net.galvin.orange.core.Utils.SysEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class NettyTransportClient {
+import java.util.concurrent.ExecutionException;
 
-    private final static Logger logger = LoggerFactory.getLogger(NettyTransportClient.class);
+public class NettyClient {
+
+    private final static Logger logger = LoggerFactory.getLogger(NettyClient.class);
 
     private EventLoopGroup workerGroup;
     private ChannelFuture channelFuture;
+    private final NettyClientInboundHandler nettyClientInboundHandler;
+    private final NettyClientOutboundHandler nettyClientOutboundHandler;
 
-    public static NettyTransportClient newInstance(NettySession nettySession){
-        NettyTransportClient nettyTransportClient = new NettyTransportClient();
-        nettyTransportClient.init(nettySession);
-        return nettyTransportClient;
+    public static NettyClient newInstance(NettySession nettySession){
+        NettyClient nettyClient = new NettyClient(nettySession);
+        nettySession.setNettyClient(nettyClient);
+        return nettyClient;
     }
 
+    private NettyClient(NettySession nettySession){
+        nettyClientInboundHandler = new NettyClientInboundHandler();
+        nettyClientOutboundHandler = new NettyClientOutboundHandler();
+        init(nettySession);
+    }
 
+    /**
+     * 初始化客户端
+     * @param nettySession
+     */
     private void init(NettySession nettySession){
+
         this.workerGroup = new NioEventLoopGroup();
-        final NettyTransportClientHandler nettyClientHandler = new NettyTransportClientHandler();
         try {
             Bootstrap bootstrap = new Bootstrap();
             bootstrap.group(workerGroup);
@@ -39,7 +52,9 @@ public class NettyTransportClient {
             bootstrap.handler(new ChannelInitializer<SocketChannel>() {
                 @Override
                 public void initChannel(SocketChannel ch) throws Exception {
-                    ch.pipeline().addLast(nettyClientHandler);
+                    ch.pipeline()
+                            .addLast(nettyClientInboundHandler)
+                            .addLast(nettyClientOutboundHandler);
                 }
             });
             this.channelFuture = bootstrap.connect(nettySession.getRemoteAddress(),nettySession.getRemotePort()).sync();
@@ -47,6 +62,7 @@ public class NettyTransportClient {
             logger.error(e.getMessage());
             workerGroup.shutdownGracefully();
         }
+
     }
 
     public void shutdownGracefully(){
@@ -63,6 +79,10 @@ public class NettyTransportClient {
         }
     }
 
+    /**
+     * 发消息
+     * @param msg
+     */
     public void writeAndFlush(String msg){
         ByteBuf byteBuf = this.channelFuture.channel().alloc().buffer();
         byteBuf.writeCharSequence(msg, CharsetUtil.UTF_8);
@@ -71,6 +91,17 @@ public class NettyTransportClient {
         } catch (Exception e) {
             logger.error(e.getMessage());
         }
+    }
+
+    public String read(){
+        String msg = null;
+        try {
+            this.channelFuture.get();
+            msg = this.nettyClientInboundHandler.getResultVal();
+        } catch (Exception e) {
+            logger.error(SysEnum.format(e));
+        }
+        return msg;
     }
 
 }

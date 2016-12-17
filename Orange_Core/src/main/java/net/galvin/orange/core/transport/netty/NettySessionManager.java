@@ -7,9 +7,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-/**
- * Created by qchu on 16-12-11.
- */
 public class NettySessionManager {
 
     private static NettySessionManager sessionManager = null;

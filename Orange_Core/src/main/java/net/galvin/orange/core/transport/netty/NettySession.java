@@ -8,7 +8,7 @@ public class NettySession {
     private Integer remotePort;
     private final Date createTime;
 
-    private NettyTransportClient nettyTransportClient;
+    private NettyClient nettyClient;
 
     public NettySession(String remoteAddress, Integer remotePort) {
         this.remoteAddress = remoteAddress;
@@ -28,27 +28,28 @@ public class NettySession {
         return createTime;
     }
 
-    public NettyTransportClient getNettyTransportClient() {
-        return nettyTransportClient;
+    public NettyClient getNettyClient() {
+        return nettyClient;
     }
 
-    public void setNettyTransportClient(NettyTransportClient nettyTransportClient) {
-        this.nettyTransportClient = nettyTransportClient;
+    public void setNettyClient(NettyClient nettyClient) {
+        this.nettyClient = nettyClient;
     }
 
-    public void writeAndFlush(String msg){
-        if(this.nettyTransportClient == null){
+    public String writeAndFlush(String msg){
+        if(this.nettyClient == null){
             synchronized (this){
-                if(this.nettyTransportClient == null){
-                    NettyTransportClient.newInstance(this);
+                if(this.nettyClient == null){
+                    NettyClient.newInstance(this);
                 }
             }
         }
-        this.nettyTransportClient.writeAndFlush(msg);
+        this.nettyClient.writeAndFlush(msg);
+        return this.nettyClient.read();
     }
 
     public void shutdownGracefully(){
-        this.nettyTransportClient.shutdownGracefully();
+        this.nettyClient.shutdownGracefully();
     }
 
 }
