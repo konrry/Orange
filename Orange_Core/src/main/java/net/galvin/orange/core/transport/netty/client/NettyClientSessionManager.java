@@ -1,4 +1,4 @@
-package net.galvin.orange.core.transport.netty;
+package net.galvin.orange.core.transport.netty.client;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -7,28 +7,28 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class NettySessionManager {
+public class NettyClientSessionManager {
 
-    private static NettySessionManager sessionManager = null;
-    private final Map<String,NettySession> nettySessionMap;
+    private static NettyClientSessionManager sessionManager = null;
+    private final Map<String,NettyClientSession> nettySessionMap;
     private final Lock lock = new ReentrantLock();
 
-    private NettySessionManager(){
-        this.nettySessionMap = new ConcurrentHashMap<String,NettySession>();
+    private NettyClientSessionManager(){
+        this.nettySessionMap = new ConcurrentHashMap<String,NettyClientSession>();
     }
 
-    public static NettySessionManager get(){
+    public static NettyClientSessionManager get(){
         if(sessionManager == null){
-            synchronized (NettySessionManager.class){
+            synchronized (NettyClientSessionManager.class){
                 if(sessionManager == null){
-                    sessionManager = new NettySessionManager();
+                    sessionManager = new NettyClientSessionManager();
                 }
             }
         }
         return sessionManager;
     }
 
-    public NettySession session(String remoteAddress,Integer port){
+    public NettyClientSession session(String remoteAddress, Integer port){
         if(StringUtils.isEmpty(remoteAddress)){
             remoteAddress = "127.0.0.1";
         }
@@ -39,13 +39,11 @@ public class NettySessionManager {
         if(this.nettySessionMap.get(key) == null){
             lock.lock();
             if(this.nettySessionMap.get(key) == null){
-                this.nettySessionMap.put(key,new NettySession(remoteAddress,port));
+                this.nettySessionMap.put(key,new NettyClientSession(remoteAddress,port));
             }
             lock.unlock();
         }
         return this.nettySessionMap.get(key);
     }
-
-
 
 }

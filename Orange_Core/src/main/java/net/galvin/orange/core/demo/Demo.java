@@ -1,6 +1,8 @@
 package net.galvin.orange.core.demo;
 
 import net.galvin.orange.core.Utils.JDKSerializeUtils;
+import net.galvin.orange.core.Utils.SysEnum;
+import net.galvin.orange.core.transport.comm.NetRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,9 +14,8 @@ public class Demo {
     private static Logger logger = LoggerFactory.getLogger(Demo.class);
 
     public static void main(String[] args) {
-        int a = 1;
-        Integer b = new Integer(2);
-        System.out.println(JDKSerializeUtils.serialize(1).length);
+        String s = "abcd";
+        System.out.println(s.getBytes().length);
     }
 
 

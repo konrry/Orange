@@ -1,8 +1,9 @@
-package net.galvin.orange.core.transport.netty;
+package net.galvin.orange.core.transport.netty.client;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.util.ReferenceCountUtil;
 import net.galvin.orange.core.Utils.SysEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +41,7 @@ public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
             msgBuffer.append((char) byteBufMsg.readByte());
         }
         this.resultVal = msgBuffer.toString();
+        ReferenceCountUtil.release(msg);
     }
 
     @Override

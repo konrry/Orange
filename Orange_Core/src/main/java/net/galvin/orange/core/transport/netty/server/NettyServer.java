@@ -1,4 +1,4 @@
-package net.galvin.orange.core.transport.netty;
+package net.galvin.orange.core.transport.netty.server;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 public class NettyServer {
 
     private final Logger logger = LoggerFactory.getLogger(NettyServer.class);
-
     private int port = 9028;
 
     public void start(){
@@ -36,7 +35,6 @@ public class NettyServer {
                     })
                     .option(ChannelOption.SO_BACKLOG, 128)
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
-
             ChannelFuture future = b.bind(port).sync();
             future.channel().closeFuture().sync();
         }catch (Exception e){

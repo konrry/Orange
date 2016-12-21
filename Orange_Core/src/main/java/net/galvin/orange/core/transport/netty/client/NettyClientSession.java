@@ -1,16 +1,19 @@
-package net.galvin.orange.core.transport.netty;
+package net.galvin.orange.core.transport.netty.client;
 
 import java.util.Date;
+import java.util.UUID;
 
-public class NettySession {
+public class NettyClientSession {
 
+    private String seesionId;
     private String remoteAddress;
     private Integer remotePort;
     private final Date createTime;
 
     private NettyClient nettyClient;
 
-    public NettySession(String remoteAddress, Integer remotePort) {
+    public NettyClientSession(String remoteAddress, Integer remotePort) {
+        this.seesionId = UUID.randomUUID().toString();
         this.remoteAddress = remoteAddress;
         this.remotePort = remotePort;
         this.createTime = new Date();
@@ -36,7 +39,11 @@ public class NettySession {
         this.nettyClient = nettyClient;
     }
 
-    public String writeAndFlush(String msg){
+    public String getSeesionId() {
+        return seesionId;
+    }
+
+    public void connect(){
         if(this.nettyClient == null){
             synchronized (this){
                 if(this.nettyClient == null){
@@ -44,7 +51,13 @@ public class NettySession {
                 }
             }
         }
+    }
+
+    public void writeAndFlush(byte[] msg){
         this.nettyClient.writeAndFlush(msg);
+    }
+
+    public String read(){
         return this.nettyClient.read();
     }
 

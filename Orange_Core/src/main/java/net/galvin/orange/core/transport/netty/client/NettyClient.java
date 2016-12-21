@@ -1,4 +1,4 @@
-package net.galvin.orange.core.transport.netty;
+package net.galvin.orange.core.transport.netty.client;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
@@ -9,12 +9,9 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.util.CharsetUtil;
 import net.galvin.orange.core.Utils.SysEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.concurrent.ExecutionException;
 
 public class NettyClient {
 
@@ -23,25 +20,22 @@ public class NettyClient {
     private EventLoopGroup workerGroup;
     private ChannelFuture channelFuture;
     private final NettyClientInboundHandler nettyClientInboundHandler;
-    private final NettyClientOutboundHandler nettyClientOutboundHandler;
 
-    public static NettyClient newInstance(NettySession nettySession){
-        NettyClient nettyClient = new NettyClient(nettySession);
-        nettySession.setNettyClient(nettyClient);
+    public static NettyClient newInstance(NettyClientSession nettyClientSession){
+        NettyClient nettyClient = new NettyClient(nettyClientSession);
+        nettyClientSession.setNettyClient(nettyClient);
         return nettyClient;
     }
 
-    private NettyClient(NettySession nettySession){
+    private NettyClient(NettyClientSession nettyClientSession){
         nettyClientInboundHandler = new NettyClientInboundHandler();
-        nettyClientOutboundHandler = new NettyClientOutboundHandler();
-        init(nettySession);
+        init(nettyClientSession);
     }
 
     /**
      * 初始化客户端
-     * @param nettySession
      */
-    private void init(NettySession nettySession){
+    private void init(NettyClientSession nettyClientSession){
 
         this.workerGroup = new NioEventLoopGroup();
         try {
@@ -53,11 +47,10 @@ public class NettyClient {
                 @Override
                 public void initChannel(SocketChannel ch) throws Exception {
                     ch.pipeline()
-                            .addLast(nettyClientInboundHandler)
-                            .addLast(nettyClientOutboundHandler);
+                            .addLast(nettyClientInboundHandler);
                 }
             });
-            this.channelFuture = bootstrap.connect(nettySession.getRemoteAddress(),nettySession.getRemotePort()).sync();
+            this.channelFuture = bootstrap.connect(nettyClientSession.getRemoteAddress(),nettyClientSession.getRemotePort()).sync();
         } catch (Exception e) {
             logger.error(e.getMessage());
             workerGroup.shutdownGracefully();
@@ -83,9 +76,9 @@ public class NettyClient {
      * 发消息
      * @param msg
      */
-    public void writeAndFlush(String msg){
+    public void writeAndFlush(byte[] msg){
         ByteBuf byteBuf = this.channelFuture.channel().alloc().buffer();
-        byteBuf.writeCharSequence(msg, CharsetUtil.UTF_8);
+        byteBuf.writeBytes(msg);
         try {
             this.channelFuture.channel().writeAndFlush(byteBuf).sync();
         } catch (Exception e) {
