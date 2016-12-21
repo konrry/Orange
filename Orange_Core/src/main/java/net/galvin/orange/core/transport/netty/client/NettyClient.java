@@ -86,14 +86,4 @@ public class NettyClient {
         }
     }
 
-    public String read(){
-        String msg = null;
-        try {
-            msg = this.nettyClientInboundHandler.getResultVal();
-        } catch (Exception e) {
-            logger.error(SysEnum.format(e));
-        }
-        return msg;
-    }
-
 }

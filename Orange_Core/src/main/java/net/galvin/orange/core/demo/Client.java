@@ -11,8 +11,10 @@ public class Client {
     public static void main(String[] args) {
         ProxyClazzGenerator proxyClazzGenerator = ProxyClazzAsmGeneratorImpl.get();
         HelloService helloService = (HelloService) proxyClazzGenerator.generate(HelloService.class);
-        String hello = helloService.hello("Client");
-        System.out.println("hello: "+hello);
+        for(int i=0;i<10000;i++){
+            String hello = helloService.hello("Client"+i);
+            System.out.println("hello: "+hello);
+        }
     }
 
 }

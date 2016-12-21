@@ -36,9 +36,11 @@ public class NetTransportProxy {
         NettyClientSession nettyClientSession = NettyClientSessionManager.get().session(null,null);
         nettyClientSession.connect();
         if(msgByteArr != null && msgByteArr.length > 0){
+            NetTransportManager.createLock(netRequest.getRequestId());
             nettyClientSession.writeAndFlush(msgByteArr);
         }
-        return nettyClientSession.read();
+        NetResponse<String> netResponse = NetTransportManager.read(netRequest.getRequestId());
+        return netResponse.getBody();
     }
 
 }

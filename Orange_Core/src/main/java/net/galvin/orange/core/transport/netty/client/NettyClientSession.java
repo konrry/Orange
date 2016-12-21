@@ -57,9 +57,6 @@ public class NettyClientSession {
         this.nettyClient.writeAndFlush(msg);
     }
 
-    public String read(){
-        return this.nettyClient.read();
-    }
 
     public void shutdownGracefully(){
         this.nettyClient.shutdownGracefully();
