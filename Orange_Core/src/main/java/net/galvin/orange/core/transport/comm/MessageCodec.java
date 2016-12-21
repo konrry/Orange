@@ -20,8 +20,6 @@ public class MessageCodec<T> {
 
     private T t;
 
-    private List<Byte> byteList = new ArrayList<Byte>();
-
     /**
      * 编码解码器
      */
