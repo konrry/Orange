@@ -6,6 +6,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.galvin.orange.core.Utils.JDKSerializeUtils;
 import net.galvin.orange.core.Utils.SysEnum;
 import net.galvin.orange.core.demo.HelloServiceImpl;
+import net.galvin.orange.core.transport.comm.MessageCodec;
 import net.galvin.orange.core.transport.comm.NetRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NettyServerHandler extends ChannelInboundHandlerAdapter {
+
+    MessageCodec<NetRequest<String>> messageCodec = new MessageCodec<NetRequest<String>>();
 
     private final Logger logger = LoggerFactory.getLogger(NettyServerHandler.class);
 
@@ -26,26 +29,20 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         System.out.println("NettyServerHandler ===>> channelRead");
         ByteBuf byteBufMsg = (ByteBuf) msg;
-        List<Byte> byteList = new ArrayList<Byte>();
-        while (byteBufMsg.isReadable()){
-            byteList.add(byteBufMsg.readByte());
-        }
-        if(byteList != null && byteList.size() > 0){
-            byte[] byteArr = new byte[byteList.size()];
-            for(int i=0;i<byteList.size();i++){
-                byteArr[i] = byteList.get(i);
-            }
-            NetRequest<String> netRequest = (NetRequest<String>) JDKSerializeUtils.deserialize(byteArr);
+        boolean status = messageCodec.codec(byteBufMsg);
+        if(status){
+            NetRequest<String> netRequest = messageCodec.getT();
             String returnVal = HelloServiceImpl.get().hello(netRequest.getBody());
+            System.out.println(returnVal);
+            ByteBuf byteBuf = ctx.channel().alloc().buffer();
+            byteBuf.writeBytes(returnVal.getBytes());
+            try {
+                ctx.channel().writeAndFlush(byteBuf).sync();
+            } catch (Exception e) {
+                logger.error(e.getMessage());
+            }
         }
 
-//        ByteBuf byteBuf = ctx.channel().alloc().buffer();
-//        byteBuf.writeCharSequence(returnVal, CharsetUtil.UTF_8);
-//        try {
-//            ctx.channel().writeAndFlush(byteBuf).sync();
-//        } catch (Exception e) {
-//            logger.error(e.getMessage());
-//        }
     }
 
     @Override
