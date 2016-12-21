@@ -89,7 +89,6 @@ public class NettyClient {
     public String read(){
         String msg = null;
         try {
-            this.channelFuture.get();
             msg = this.nettyClientInboundHandler.getResultVal();
         } catch (Exception e) {
             logger.error(SysEnum.format(e));

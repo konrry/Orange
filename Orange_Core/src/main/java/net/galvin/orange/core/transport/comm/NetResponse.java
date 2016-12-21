@@ -18,4 +18,7 @@ public class NetResponse<T> implements Serializable {
         return body;
     }
 
+    public String getRequestId() {
+        return requestId;
+    }
 }

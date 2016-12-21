@@ -5,6 +5,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
 import net.galvin.orange.core.Utils.SysEnum;
+import net.galvin.orange.core.transport.comm.MessageCodec;
+import net.galvin.orange.core.transport.comm.NetResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,7 +15,9 @@ public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
     private final Logger logger = LoggerFactory.getLogger(NettyClientInboundHandler.class);
     private ChannelHandlerContext channelHandlerContext = null;
 
-    private String resultVal;
+    MessageCodec<NetResponse<String>> netResponseMessageCodec = new MessageCodec<NetResponse<String>>();
+
+    private volatile String resultVal = null;
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -36,11 +40,11 @@ public class NettyClientInboundHandler extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         System.out.println("NettyClientInboundHandler ===>> channelRead");
         ByteBuf byteBufMsg = (ByteBuf) msg;
-        StringBuffer msgBuffer = new StringBuffer();
-        while(byteBufMsg.isReadable()){
-            msgBuffer.append((char) byteBufMsg.readByte());
+        boolean status = netResponseMessageCodec.codec(byteBufMsg);
+        if(status){
+            NetResponse<String> netResponse = netResponseMessageCodec.getT();
+            this.resultVal = netResponse.getBody();
         }
-        this.resultVal = msgBuffer.toString();
         ReferenceCountUtil.release(msg);
     }
 
